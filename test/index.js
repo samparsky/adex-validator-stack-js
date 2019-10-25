@@ -144,8 +144,8 @@ tape.only('getStateRootHash: returns correct result', function(t) {
 				id: '061d5e2a67d0a9a10f1c732bca12a676d83f79663a396f7d87b3e30b9b411088'
 			},
 			balances: {
-				"0xb7d3f81e857692d13e9d63b232a90f4a1793189e": 1,
-				"0x2892f6C41E0718eeeDd49D98D648C789668cA67d": 2
+				'0xb7d3f81e857692d13e9d63b232a90f4a1793189e': 1,
+				'0x2892f6C41E0718eeeDd49D98D648C789668cA67d': 2
 			},
 			expectedHash: 'da9b42bb60da9622404cade0aec4cda0a10104c6ec5f07ad67de081abb58c803'
 		}

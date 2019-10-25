@@ -60,7 +60,7 @@ tape('submit events and ensure they are accounted for', async function(t) {
 	// the NewState was generated, sent to the follower,
 	// who generated ApproveState and sent back to the leader
 	await forceTick()
-	console.log("second Aggr and Tick");
+	console.log('second Aggr and Tick')
 
 	const { lastApproved, heartbeats } = await iface.getLastMsgs()
 	console.log({ lastApproved })
@@ -125,15 +125,13 @@ tape('submit events and ensure they are accounted for', async function(t) {
 
 	// Check inclusion proofs of the balance
 	// stateRoot = keccak256(channelId, balanceRoot)
-	console.log({ 
+	console.log({
 		balancesTree
 	})
 	const allLeafs = Object.keys(balancesTree).map(k => Channel.getBalanceLeaf(k, balancesTree[k]))
-	console.log(
-		allLeafs.map(x => x.toString('hex'))
-	)
+	console.log(allLeafs.map(x => x.toString('hex')))
 	const mTree = new MerkleTree(allLeafs)
-	console.log( 'merkle tree root', mTree.getRoot().toString('hex'));
+	console.log('merkle tree root', mTree.getRoot().toString('hex'))
 	const stateRootRaw = Channel.getSignableStateRoot(channel.id, mTree.getRoot()).toString('hex')
 	const { stateRoot } = lastNew.msg
 	t.equals(stateRootRaw, stateRoot, 'stateRoot matches merkle tree root')

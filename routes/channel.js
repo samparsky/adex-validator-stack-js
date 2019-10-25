@@ -157,7 +157,7 @@ async function retrieveLastApproved(channel) {
 		.sort({ received: -1 })
 		.limit(1)
 		.toArray()
-	
+
 	console.log({ approveStateMsgs })
 	if (!approveStateMsgs.length) {
 		return null

@@ -24,7 +24,7 @@ function channelIfFind(cond, req, res, next) {
 		.countDocuments(cond, { limit: 1 })
 		.then(function(n) {
 			if (!n) {
-				res.status(404).json({"error": "no id"})
+				res.status(404).json({ error: 'no id' })
 			} else {
 				next()
 			}
