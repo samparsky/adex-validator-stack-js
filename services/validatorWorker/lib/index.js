@@ -4,9 +4,12 @@ const BN = require('bn.js')
 function getStateRootHash(adapter, channel, balances) {
 	// Note: MerkleTree takes care of deduplicating and sorting
 	const elems = Object.keys(balances).map(acc => adapter.getBalanceLeaf(acc, balances[acc]))
+	// console.log(elems.map(x => x.toString('hex')))
+
 	const tree = new adapter.MerkleTree(elems)
 	const balanceRoot = tree.getRoot()
 	// keccak256(channelId, balanceRoot)
+	// console.log(`balanceRoot --- ${balanceRoot.toString('hex')}`)
 	return adapter.getSignableStateRoot(channel.id, balanceRoot)
 }
 

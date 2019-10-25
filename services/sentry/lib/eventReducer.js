@@ -78,6 +78,9 @@ function mergeEv(initialMap = { eventCounts: {}, eventPayouts: {} }, ev, channel
 	if (!ev.output) {
 		const newEventCounts = new BN(map.eventCounts[eventCountKey], 10)
 		map.eventCounts[eventCountKey] = addAndToString(newEventCounts, new BN(1))
+	} else {
+		const newEventCounts = new BN(map.eventCounts[eventCountKey], 10)
+		map.eventCounts[eventCountKey] = addAndToString(newEventCounts, new BN(0))
 	}
 
 	// current publisher payout

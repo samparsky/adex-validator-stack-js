@@ -13,6 +13,8 @@ function fetchPost(url, authToken, body) {
 			'content-type': 'application/json'
 		},
 		body: JSON.stringify(body)
+	}).catch((error) => {
+		console.log(`tests`, error.text())
 	})
 }
 
@@ -73,10 +75,10 @@ function exec(cmd) {
 function forceTick() {
 	return Promise.all([
 		exec(
-			`./bin/validatorWorker.js --single-tick --adapter=dummy --dummyIdentity=awesomeLeader --sentryUrl=http://localhost:8005`
+			`RUST_BACKTRACE=1 /Users/Samparsky/Sites/rust/adex-validator-stack-rust/target/debug/validator_worker -a dummy -i 0xce07cbb7e054514d590a0262c93070d838bfba2e -u http://localhost:8005 -t`
 		),
 		exec(
-			`./bin/validatorWorker.js --single-tick --adapter=dummy --dummyIdentity=awesomeFollower --sentryUrl=http://localhost:8006`
+			`RUST_BACKTRACE=1 /Users/Samparsky/Sites/rust/adex-validator-stack-rust/target/debug/validator_worker -a dummy -i 0xc91763d7f14ac5c5ddfbcd012e0d2a61ab9bded3 -u http://localhost:8006 -t`
 		)
 	])
 }

@@ -15,6 +15,7 @@ function forAdapter(adapter) {
 		adapter
 			.validateChannel(channel)
 			.then(success => {
+				console.log({ success })
 				if (!success) throw new Error('adapter validation not successful')
 				channelsCol
 					.insertOne(channel)
