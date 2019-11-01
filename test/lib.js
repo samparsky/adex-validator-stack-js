@@ -13,8 +13,6 @@ function fetchPost(url, authToken, body) {
 			'content-type': 'application/json'
 		},
 		body: JSON.stringify(body)
-	}).catch(error => {
-		console.log(`tests`, error.text())
 	})
 }
 

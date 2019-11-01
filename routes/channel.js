@@ -55,9 +55,6 @@ function getEventAggregates(req, res, next) {
 		const after = parseInt(req.query.after, 10)
 		query = { ...query, created: { $gt: new Date(after) } }
 	}
-	console.log(`req.query.after: ${req.query.after}`)
-	console.log(`req.query.after: ${parseInt(req.query.after, 10)}`)
-	console.log(`event aggregates query: ${JSON.stringify(query)}`)
 
 	return eventsCol
 		.find(query, { projection })
@@ -65,8 +62,6 @@ function getEventAggregates(req, res, next) {
 		.sort({ created: 1 })
 		.toArray()
 		.then(events => {
-			// console.log({ channel, events })
-			// console.log(JSON.stringify(events))
 			return res.send({ channel, events })
 		})
 		.catch(next)
@@ -142,7 +137,6 @@ async function getLastApprovedMessages(req, res, next) {
 
 async function retrieveLastApproved(channel) {
 	const validatorMsgCol = db.getMongo().collection('validatorMessages')
-	console.log(channel.id, channel.spec.validators[1].id, VALIDATOR_MSGS_PROJ)
 	const approveStateMsgs = await validatorMsgCol
 		.find(
 			{
@@ -158,7 +152,6 @@ async function retrieveLastApproved(channel) {
 		.limit(1)
 		.toArray()
 
-	console.log({ approveStateMsgs })
 	if (!approveStateMsgs.length) {
 		return null
 	}
