@@ -64,19 +64,31 @@ When posting to `/channel/:id/validator-messages`, you need to be authenticated 
 
 Unit tests:
 
-```
+```sh
 npm test
 ```
 
 Integration tests:
 
-```
+```sh
 npm run test-integration
+```
+
+For Rust validator_worker
+
+```sh
+RUST_VALIDATOR_WORKER=[location of rust validator_worker binary] npm run test-integration
+```
+
+e.g.
+
+```sh
+RUST_VALIDATOR_WORKER=/rust/adex-validator-stack-rust/target/debug/validator_worker npm run test-integration
 ```
 
 Run both:
 
-```
+```sh
 npm test && npm run test-integration
 ```
 

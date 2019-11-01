@@ -152,93 +152,93 @@ tape('new states are not produced when there are no new aggregates', async funct
 	t.end()
 })
 
-// tape('/channel/{id}/events-aggregates, /analytics/:id', async function(t) {
-// 	const id = 'eventAggregateCountTest'
-// 	const channel = {
-// 		...dummyVals.channel,
-// 		id,
-// 		validUntil,
-// 		spec: {
-// 			...dummyVals.channel.spec,
-// 			withdrawPeriodStart
-// 		}
-// 	}
+tape('/channel/{id}/events-aggregates, /analytics/:id', async function(t) {
+	const id = '0xf7cb2d80ed33480ea985833642dab086bcda70e9912d4d6dc0b137d73ec15274'
+	const channel = {
+		...dummyVals.channel,
+		id,
+		validUntil,
+		spec: {
+			...dummyVals.channel.spec,
+			withdrawPeriodStart
+		}
+	}
 
-// 	// Submit a new channel; we submit it to both sentries to avoid 404 when propagating messages
-// 	await Promise.all([
-// 		fetchPost(`${leaderUrl}/channel`, dummyVals.auth.leader, channel),
-// 		fetchPost(`${followerUrl}/channel`, dummyVals.auth.follower, channel)
-// 	])
+	// Submit a new channel; we submit it to both sentries to avoid 404 when propagating messages
+	await Promise.all([
+		fetchPost(`${leaderUrl}/channel`, dummyVals.auth.leader, channel),
+		fetchPost(`${followerUrl}/channel`, dummyVals.auth.follower, channel)
+	])
 
-// 	// post events for that channel for multiple publishers
-// 	const publishers = [
-// 		[dummyVals.auth.creator, genEvents(3, dummyVals.ids.publisher)],
-// 		[dummyVals.auth.creator, genEvents(3, dummyVals.ids.publisher2)]
-// 	]
+	// post events for that channel for multiple publishers
+	const publishers = [
+		[dummyVals.auth.creator, genEvents(3, dummyVals.ids.publisher)],
+		[dummyVals.auth.creator, genEvents(3, dummyVals.ids.publisher2)]
+	]
 
-// 	await Promise.all(
-// 		publishers.map(async ([auth, event]) =>
-// 			postEvents(leaderUrl, id, event, auth).then(res => res.json())
-// 		)
-// 	)
-// 	await aggrAndTick()
-// 	const eventAggrFilterfixtures = [
-// 		// if we're a non superuser (validator) returns our event
-// 		[dummyVals.auth.publisher, 1],
-// 		[dummyVals.auth.publisher2, 1],
-// 		// if we're a superuser (validator) returns all events
-// 		[dummyVals.auth.leader, 2]
-// 	]
+	await Promise.all(
+		publishers.map(async ([auth, event]) =>
+			postEvents(leaderUrl, id, event, auth).then(res => res.json())
+		)
+	)
+	await aggrAndTick()
+	const eventAggrFilterfixtures = [
+		// if we're a non superuser (validator) returns our event
+		[dummyVals.auth.publisher, 1],
+		[dummyVals.auth.publisher2, 1],
+		// if we're a superuser (validator) returns all events
+		[dummyVals.auth.leader, 2]
+	]
 
-// 	const url = `${leaderUrl}/channel/${id}/events-aggregates`
+	const url = `${leaderUrl}/channel/${id}/events-aggregates`
 
-// 	await Promise.all(
-// 		eventAggrFilterfixtures.map(async fixture => {
-// 			const [auth, eventLength] = fixture
-// 			const resp = await fetch(url, {
-// 				method: 'GET',
-// 				headers: {
-// 					authorization: `Bearer ${auth}`,
-// 					'content-type': 'application/json'
-// 				}
-// 			}).then(res => res.json())
-// 			t.ok(resp.channel, 'has resp.channel')
-// 			t.ok(resp.events, 'has resp.events')
-// 			t.ok(resp.events.length === eventLength, `should have events of length ${eventLength}`)
-// 			t.notOk(
-// 				resp.events[0].events.IMPRESSION.eventCounts,
-// 				'should not return eventCounts by defualt'
-// 			)
-// 			t.ok(resp.events[0].events.IMPRESSION, 'has a single aggregate with IMPRESSIONS')
-// 		})
-// 	)
+	await Promise.all(
+		eventAggrFilterfixtures.map(async fixture => {
+			const [auth, eventLength] = fixture
+			const resp = await fetch(url, {
+				method: 'GET',
+				headers: {
+					authorization: `Bearer ${auth}`,
+					'content-type': 'application/json'
+				}
+			}).then(res => res.json())
+			t.ok(resp.channel, 'has resp.channel')
+			t.ok(resp.events, 'has resp.events')
+			t.ok(resp.events.length === eventLength, `should have events of length ${eventLength}`)
+			t.notOk(
+				resp.events[0].events.IMPRESSION.eventCounts,
+				'should not return eventCounts by defualt'
+			)
+			t.ok(resp.events[0].events.IMPRESSION, 'has a single aggregate with IMPRESSIONS')
+		})
+	)
 
-// 	const analyticsFilterFixtures = [
-// 		['?metric=eventPayouts'],
-// 		['?metric=eventCounts'],
-// 		['?timeframe=year'],
-// 		['?timeframe=day'],
-// 		['?timeframe=month']
-// 	]
+	const analyticsFilterFixtures = [
+		['?metric=eventPayouts'],
+		['?metric=eventCounts'],
+		['?timeframe=year'],
+		['?timeframe=day'],
+		['?timeframe=month']
+	]
 
-// 	//  with authentication
-// 	await Promise.all(
-// 		analyticsFilterFixtures.map(async fixture => {
-// 			const [query] = fixture
-// 			const resp = await fetch(`${leaderUrl}/analytics/${channel.id}${query}`, {
-// 				method: 'GET',
-// 				headers: {
-// 					authorization: `Bearer ${dummyVals.auth.publisher}`,
-// 					'content-type': 'application/json'
-// 				}
-// 			}).then(res => res.json())
-// 			t.ok(resp.aggr[0].time, 'has resp.channel')
-// 			// 3 is number of events submitted by publisher in authorization
-// 			t.ok(resp.aggr[0].value === '3', 'has correct aggr value')
-// 		})
-// 	)
-// 	t.end()
-// })
+	//  with authentication
+	await Promise.all(
+		analyticsFilterFixtures.map(async fixture => {
+			const [query] = fixture
+			const resp = await fetch(`${leaderUrl}/analytics/${channel.id}${query}`, {
+				method: 'GET',
+				headers: {
+					authorization: `Bearer ${dummyVals.auth.publisher}`,
+					'content-type': 'application/json'
+				}
+			}).then(res => res.json())
+			t.ok(resp.aggr[0].time, 'has resp.channel')
+			// 3 is number of events submitted by publisher in authorization
+			t.ok(resp.aggr[0].value === '3', 'has correct aggr value')
+		})
+	)
+	t.end()
+})
 
 tape('heartbeat has been emitted', async function(t) {
 	// This also checks if the propagation works, cause it tries to get the followers
@@ -479,41 +479,41 @@ tape('should close channel', async function(t) {
 	t.end()
 })
 
-// tape('should prevent sending heartbeat on exhausted channels', async function(t) {
-// 	const channel = {
-// 		...dummyVals.channel,
-// 		id: '0xfa296c55dbd219cd61c84397dab415d39ec2c8cb5458f2b1b272485fa4a7c8d2',
-// 		validUntil,
-// 		spec: {
-// 			...dummyVals.channel.spec,
-// 			withdrawPeriodStart
-// 		}
-// 	}
+tape('should prevent sending heartbeat on exhausted channels', async function(t) {
+	const channel = {
+		...dummyVals.channel,
+		id: '0xfa296c55dbd219cd61c84397dab415d39ec2c8cb5458f2b1b272485fa4a7c8d2',
+		validUntil,
+		spec: {
+			...dummyVals.channel.spec,
+			withdrawPeriodStart
+		}
+	}
 
-// 	const channelIface = new SentryInterface(dummyAdapter, channel, { logging: false })
+	const channelIface = new SentryInterface(dummyAdapter, channel, { logging: false })
 
-// 	// Submit a new channel; we submit it to both sentries to avoid 404 when propagating messages
-// 	await Promise.all([
-// 		fetchPost(`${leaderUrl}/channel`, dummyVals.auth.leader, channel),
-// 		fetchPost(`${followerUrl}/channel`, dummyVals.auth.follower, channel)
-// 	])
+	// Submit a new channel; we submit it to both sentries to avoid 404 when propagating messages
+	await Promise.all([
+		fetchPost(`${leaderUrl}/channel`, dummyVals.auth.leader, channel),
+		fetchPost(`${followerUrl}/channel`, dummyVals.auth.follower, channel)
+	])
 
-// 	await Promise.all(
-// 		[leaderUrl, followerUrl].map(url =>
-// 			postEvents(url, channel.id, genEvents(1000)).then(response => {
-// 				if (response.status !== 200) throw new Error(`postEvents failed with ${response.status}`)
-// 			})
-// 		)
-// 	)
-// 	// should not generate heartbeat beacuse the channel is exhausted
-// 	await aggrAndTick()
-// 	await forceTick()
+	await Promise.all(
+		[leaderUrl, followerUrl].map(url =>
+			postEvents(url, channel.id, genEvents(1000)).then(response => {
+				if (response.status !== 200) throw new Error(`postEvents failed with ${response.status}`)
+			})
+		)
+	)
+	// should not generate heartbeat beacuse the channel is exhausted
+	await aggrAndTick()
+	await forceTick()
 
-// 	const latestHeartbeatMsg = await channelIface.getOurLatestMsg('Heartbeat')
+	const latestHeartbeatMsg = await channelIface.getOurLatestMsg('Heartbeat')
 
-// 	t.equal(latestHeartbeatMsg, null, 'should not send heartbeat on exhausted channel')
-// 	t.end()
-// })
+	t.equal(latestHeartbeatMsg, null, 'should not send heartbeat on exhausted channel')
+	t.end()
+})
 
 tape('should update the price per impression for channel', async function(t) {
 	const channel = {

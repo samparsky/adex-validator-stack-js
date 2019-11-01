@@ -74,10 +74,14 @@ function forceTick() {
 	if (process.env.RUST_VALIDATOR_WORKER) {
 		return Promise.all([
 			exec(
-				`RUST_BACKTRACE=1 /Users/Samparsky/Sites/rust/adex-validator-stack-rust/target/debug/validator_worker -a dummy -i 0xce07cbb7e054514d590a0262c93070d838bfba2e -u http://localhost:8005 -t`
+				`RUST_BACKTRACE=1 ${
+					process.env.RUST_VALIDATOR_WORKER
+				} -a dummy -i 0xce07cbb7e054514d590a0262c93070d838bfba2e -u http://localhost:8005 -t`
 			),
 			exec(
-				`RUST_BACKTRACE=1 /Users/Samparsky/Sites/rust/adex-validator-stack-rust/target/debug/validator_worker -a dummy -i 0xc91763d7f14ac5c5ddfbcd012e0d2a61ab9bded3 -u http://localhost:8006 -t`
+				`RUST_BACKTRACE=1 ${
+					process.env.RUST_VALIDATOR_WORKER
+				} -a dummy -i 0xc91763d7f14ac5c5ddfbcd012e0d2a61ab9bded3 -u http://localhost:8006 -t`
 			)
 		])
 	}
