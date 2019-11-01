@@ -60,10 +60,10 @@ function makeRecorder(channelId) {
 	// return a recorder
 	return async function(session, events) {
 		const channel = await channelPromise
-		// const hasAccess = await checkAccess(channel, session, events)
-		// if (!hasAccess.success) {
-		// 	return hasAccess
-		// }
+		const hasAccess = await checkAccess(channel, session, events)
+		if (!hasAccess.success) {
+			return hasAccess
+		}
 		// check if channel is paused
 		if (channel.currentPricePerImpression && channel.currentPricePerImpression === '0') {
 			return { success: false, statusCode: 400, message: 'channel is paused' }

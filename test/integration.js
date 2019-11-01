@@ -60,11 +60,8 @@ tape('submit events and ensure they are accounted for', async function(t) {
 	// the NewState was generated, sent to the follower,
 	// who generated ApproveState and sent back to the leader
 	await forceTick()
-	console.log('second Aggr and Tick')
 
 	const { lastApproved, heartbeats } = await iface.getLastMsgs()
-	console.log({ lastApproved })
-	console.log({ heartbeats })
 
 	t.ok(lastApproved, 'has lastApproved')
 	// ensure NewState is in order
@@ -125,13 +122,8 @@ tape('submit events and ensure they are accounted for', async function(t) {
 
 	// Check inclusion proofs of the balance
 	// stateRoot = keccak256(channelId, balanceRoot)
-	console.log({
-		balancesTree
-	})
 	const allLeafs = Object.keys(balancesTree).map(k => Channel.getBalanceLeaf(k, balancesTree[k]))
-	console.log(allLeafs.map(x => x.toString('hex')))
 	const mTree = new MerkleTree(allLeafs)
-	console.log('merkle tree root', mTree.getRoot().toString('hex'))
 	const stateRootRaw = Channel.getSignableStateRoot(channel.id, mTree.getRoot()).toString('hex')
 	const { stateRoot } = lastNew.msg
 	t.equals(stateRootRaw, stateRoot, 'stateRoot matches merkle tree root')
@@ -652,28 +644,28 @@ tape('should pause channel', async function(t) {
 	t.end()
 })
 
-// tape('deny non-creator from sending creator only events', async function(t) {
-// 	const evs = [
-// 		[{ type: 'UPDATE_IMPRESSION_PRICE', price: '3' }],
-// 		genEvents(1, null, 'PAY', null, null, null),
-// 		[{ type: 'PAUSE_CHANNEL' }],
-// 		genEvents(1, null, 'CLOSE')
-// 	]
+tape('deny non-creator from sending creator only events', async function(t) {
+	const evs = [
+		[{ type: 'UPDATE_IMPRESSION_PRICE', price: '3' }],
+		genEvents(1, null, 'PAY', null, null, null),
+		[{ type: 'PAUSE_CHANNEL' }],
+		genEvents(1, null, 'CLOSE')
+	]
 
-// 	await Promise.all(
-// 		evs.map(async ev => {
-// 			const result = await postEvents(
-// 				leaderUrl,
-// 				dummyVals.channel.id,
-// 				ev,
-// 				dummyVals.auth.leader
-// 			).then(res => res.json())
-// 			t.equal(result.success, false, 'should fail to post creator only events')
-// 			t.equal(result.statusCode, 403, 'should have a unauthorized status')
-// 		})
-// 	)
-// 	t.end()
-// })
+	await Promise.all(
+		evs.map(async ev => {
+			const result = await postEvents(
+				leaderUrl,
+				dummyVals.channel.id,
+				ev,
+				dummyVals.auth.leader
+			).then(res => res.json())
+			t.equal(result.success, false, 'should fail to post creator only events')
+			t.equal(result.statusCode, 403, 'should have a unauthorized status')
+		})
+	)
+	t.end()
+})
 
 tape('should update publisher balance with PAY event', async function(t) {
 	const channel = {
